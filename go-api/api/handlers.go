@@ -5,6 +5,7 @@ import (
 	"go-api/pkg/auth"
 	"go-api/pkg/matrix"
 	"net/http"
+	"os"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -61,8 +62,13 @@ func QR(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Encabezado de autorización faltante"})
 	}
 
+	nodeAPIURL := os.Getenv("NODE_API_URL")
+	if nodeAPIURL == "" {
+		nodeAPIURL = "http://localhost:3000"
+	}
+
 	// Enviar Q y R a la API de Node.js
-	client := fiber.Post("http://localhost:3000/statistics")
+	client := fiber.Post(nodeAPIURL + "/statistics")
 	client.Set("Authorization", authHeader)
 	client.JSON(fiber.Map{"Q": q, "R": r})
 	status, body, errs := client.Bytes()
