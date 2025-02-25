@@ -16,8 +16,9 @@ docker run -d -p 3000:3000 --name node-api -e NODE_API_URL=http://node-api:3000 
 
 ## Como probar el funcionamiento
 ### 1. Endpoint para la autenticación con JWT
+(Si se esta probando en localhost, cambiar "go-api" por localhost)
 ```bash
-curl -X POST http://localhost:8080/login \
+curl -X POST http://go-api:8080/login \
 -H "Content-Type: application/json" \
 -d '{
     "username": "admin",
@@ -27,9 +28,9 @@ curl -X POST http://localhost:8080/login \
 Ese endpoint generará un token el cual es necesario tanto para hacer la factorización QR como para obtener las operaciones adicionales en el otro api
 
 ### 2. Endpoint para enviar la matriz - da como resultado los valores ya procesados por el api de Express
-
-```bash
-curl -X POST http://localhost:8080/qr \
+(Si se esta probando en localhost, cambiar "go-api" por localhost)
+```bash 
+curl -X POST http://go-api:8080/qr \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer <jwt-token>" \
 -d '{
