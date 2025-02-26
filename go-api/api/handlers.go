@@ -41,6 +41,12 @@ func QR(c *fiber.Ctx) error {
 	// Registrar el cuerpo de la solicitud para depuración
 	fmt.Println("Cuerpo de la solicitud:", string(c.Body()))
 
+	// Verificar si el encabezado de autorización está presente
+	authHeader := c.Get("Authorization")
+	if authHeader == "" {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Encabezado de autorización faltante"})
+	}
+
 	var request struct {
 		Matrix [][]float64 `json:"matrix"`
 	}
@@ -55,12 +61,6 @@ func QR(c *fiber.Ctx) error {
 	fmt.Println("Matriz parseada:", request.Matrix)
 
 	q, r := matrix.QRFactorization(request.Matrix)
-
-	// Verificar si el encabezado de autorización está presente
-	authHeader := c.Get("Authorization")
-	if authHeader == "" {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Encabezado de autorización faltante"})
-	}
 
 	nodeAPIURL := os.Getenv("NODE_API_URL")
 	if nodeAPIURL == "" {
